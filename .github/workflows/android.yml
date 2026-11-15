@@ -26,7 +26,7 @@ jobs:
         echo "LASTFM_SECRET=${{ secrets.LASTFM_SECRET }}" >> local.properties
         echo "LISTEN_TOGETHER_SERVER=${{ secrets.LISTEN_TOGETHER_SERVER }}" >> local.properties
 
-        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > sonara-release.jks
+        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -di > sonara-release.jks
         {
           echo "storeFile=sonara-release.jks"
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}"
