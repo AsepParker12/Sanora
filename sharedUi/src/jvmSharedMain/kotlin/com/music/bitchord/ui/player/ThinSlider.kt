@@ -96,6 +96,13 @@ fun ThinSlider(
     idleHeight: Dp = 7.dp,
     activeHeight: Dp = 12.dp,
     activeColor: Color = Color.White.copy(alpha = 0.92f),
+    /**
+     * When set, the played fill is painted with this brush instead of
+     * [activeColor] — SONARA's scrubber wears the aurora gradient. The brush
+     * is created against the whole bar, so the fill reveals more of it as
+     * playback advances rather than stretching it.
+     */
+    activeBrush: Brush? = null,
     inactiveColor: Color = Color.White.copy(alpha = 0.26f),
     /** Halfway between the two track colours: visible against unplayed, invisible under played. */
     markerColor: Color = Color.White.copy(alpha = 0.5f),
@@ -243,14 +250,24 @@ fun ThinSlider(
             val filled = size.width * fraction * fillFactor
             if (filled > 0f) {
                 val alpha = if (dragging) activeColor.alpha else mixPulse?.alpha(activeColor.alpha) ?: activeColor.alpha
-                drawRoundRect(
-                    color = activeColor.copy(alpha = alpha),
-                    size = Size(
-                        filled.coerceAtLeast(size.height * fillFactor).coerceAtMost(size.width),
-                        size.height,
-                    ),
-                    cornerRadius = radius,
+                val fillSize = Size(
+                    filled.coerceAtLeast(size.height * fillFactor).coerceAtMost(size.width),
+                    size.height,
                 )
+                if (activeBrush != null) {
+                    drawRoundRect(
+                        brush = activeBrush,
+                        size = fillSize,
+                        cornerRadius = radius,
+                        alpha = alpha,
+                    )
+                } else {
+                    drawRoundRect(
+                        color = activeColor.copy(alpha = alpha),
+                        size = fillSize,
+                        cornerRadius = radius,
+                    )
+                }
             }
         }
         // Composed only while switching or mixing. The infinite animation therefore costs no

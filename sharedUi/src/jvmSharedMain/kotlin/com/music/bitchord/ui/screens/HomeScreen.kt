@@ -50,9 +50,11 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -190,6 +192,7 @@ fun HomeScreen(
             },
         ) {
             if (title != null) {
+                item(key = "sonara-brand") { SonaraBrandHeader() }
                 item { HomeTitle(title, festiveLogo = festiveLogo, onFestiveLogoClick = onFestiveLogoClick) }
             }
             if (!signedIn && onSignIn != null) {
@@ -450,6 +453,37 @@ fun CompactTrackRow(
         if (onLongPress != null) {
             RowMoreButton(onClick = onLongPress)
         }
+    }
+}
+
+/**
+ * SONARA's wordmark at the very head of the home feed: the name in the aurora
+ * gradient the launcher wears, the tagline under it in the quiet colour.
+ * Decoration only — no taps, no state. The brand colours are written out
+ * because the theme tokens live in the app module, which this one cannot see;
+ * they are SonaraViolet and SonaraCyan's values.
+ */
+@Composable
+private fun SonaraBrandHeader() {
+    Column(
+        modifier = Modifier.padding(horizontal = PAGE_GUTTER, vertical = 12.dp),
+    ) {
+        Text(
+            text = "Sonara",
+            style = MaterialTheme.typography.displayLarge.merge(
+                TextStyle(
+                    brush = Brush.linearGradient(
+                        listOf(Color(0xFF7C3AED), Color(0xFF06B6D4)),
+                    ),
+                ),
+            ),
+        )
+        Text(
+            text = "Your Music. Your World.",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 2.dp),
+        )
     }
 }
 

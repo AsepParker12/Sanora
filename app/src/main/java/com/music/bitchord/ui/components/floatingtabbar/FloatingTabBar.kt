@@ -97,6 +97,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlurEffect
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.Shape
@@ -120,6 +121,8 @@ import com.music.bitchord.ui.components.backdrop.backdrops.rememberLayerBackdrop
 import com.music.bitchord.ui.components.isGlassSupported
 import com.music.bitchord.ui.haptics.Haptic
 import com.music.bitchord.ui.haptics.rememberHaptics
+import com.music.bitchord.ui.theme.SonaraCyan
+import com.music.bitchord.ui.theme.SonaraViolet
 import kotlin.math.roundToInt
 
 /** Hoisted so the default is one stable lambda rather than a new one per call. */
@@ -762,6 +765,9 @@ private fun SharedTransitionScope.ExpandedTabs(
     // The lens samples the recorded page, and "reduce dynamic blur" stops that
     // recording. There the flat pill carries the whole motion on its own.
     val glassPill = isGlassSupported() && !reduceDynamicBlur
+    // SONARA's selection: at rest the pill wears the aurora gradient rather
+    // than upstream's neutral indicator fill.
+    val auroraBrush = remember { Brush.horizontalGradient(listOf(SonaraViolet, SonaraCyan)) }
     val barGlass = rememberLayerBackdrop()
     val tabRow = rememberLayerBackdrop()
 
@@ -853,7 +859,7 @@ private fun SharedTransitionScope.ExpandedTabs(
             ) {
                 if (showPill && (!glassPill || pill.isFlat)) {
                     FlatSelectionPill(
-                        color = colors.indicatorColor,
+                        brush = auroraBrush,
                         modifier = Modifier
                             .matchParentSize()
                             .pillPlacement(
