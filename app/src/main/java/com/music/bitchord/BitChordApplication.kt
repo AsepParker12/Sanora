@@ -47,6 +47,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.concurrent.thread
+import com.music.bitchord.ui.components.SUPPORTED_LANGUAGES
+import java.util.Locale
 
 class BitChordApplication : Application(), SingletonImageLoader.Factory, Configuration.Provider {
 
@@ -99,6 +101,7 @@ class BitChordApplication : Application(), SingletonImageLoader.Factory, Configu
         // Full tag (zh-Hant / zh-Hans preserved); Innertube maps to hl/gl.
         Innertube.appLanguage = { AppCompatDelegate.getApplicationLocales().get(0)?.toLanguageTag() }
         migrateScriptOnlyAppLocale()
+        applySystemLocaleIfUnset()
         LyricsTranslation.cacheDir = cacheDir
         // PlaybackService shares this process, so seeding the cookie here means
         // stream resolution is authenticated from the first play onwards.
@@ -331,6 +334,42 @@ class BitChordApplication : Application(), SingletonImageLoader.Factory, Configu
             AppCompatDelegate.setApplicationLocales(
                 androidx.core.os.LocaleListCompat.forLanguageTags(replacement),
             )
+        }
+
+        /**
+         * First run only: follow the phone's language when it is one the app
+         * ships, instead of coming up in English until the picker is found.
+         *
+         * An explicit choice in the language picker always wins — this only
+         * runs while no per-app locale is set. Chinese follows the same
+         * regional split as [migrateScriptOnlyAppLocale]: Traditional
+         * (script or a TW/HK/MO region) maps to `zh-TW`, anything else to
+         * `zh-CN`. Failures are swallowed: a wrong guess here must never
+         * cost a launch.
+         */
+        private fun applySystemLocaleIfUnset() {
+            runCatching {
+                if (!AppCompatDelegate.getApplicationLocales().isEmpty) return
+                val system = Locale.getDefault()
+                val tag: String? = if (system.language == "zh") {
+                    val candidate = if (
+                        system.script == "Hant" || system.country in setOf("TW", "HK", "MO")
+                    ) {
+                        "zh-TW"
+                    } else {
+                        "zh-CN"
+                    }
+                    candidate.takeIf { c -> SUPPORTED_LANGUAGES.any { it.tag == c } }
+                } else {
+                    SUPPORTED_LANGUAGES.firstOrNull {
+                        it.tag.substringBefore('-') == system.language
+                    }?.tag
+                }
+                if (tag == null) return
+                AppCompatDelegate.setApplicationLocales(
+                    androidx.core.os.LocaleListCompat.forLanguageTags(tag),
+                )
+            }
         }
     }
 }
