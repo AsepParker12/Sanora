@@ -21,9 +21,9 @@ object SonaraAccess {
     enum class AccessLevel { OWNER, GUEST }
 
     private const val OWNER_HASH =
-        "7d44fef59eeccee4b8353a1e2485a1efce04b230b1ade34d7ce496cfcb7c2ada"
+        "2167dffe880ed11df5edc567b8f71fd61c3118cc5d294ee730d3270f6aaf9651"
     private const val GUEST_HASH =
-        "551525a8ef06d659ace11e3aaedc53a3fb010807281ca6a0f93aed6ebb568cb1"
+        "8524f1fc065addadbf71933ac445e959324cafa990ddf0da274419e4adfc9393"
 
     private const val PREFS_NAME = "sonara_access"
     private const val PREFS_PLAIN_NAME = "sonara_access_plain"
