@@ -7,6 +7,9 @@
     <cloud-backup>
         <exclude domain="sharedpref" path="bitchord_auth.xml" />
         <exclude domain="sharedpref" path="bitchord_auth_plain.xml" />
+        <!-- The access grant: the hash of the code that unlocked this device (see SonaraAccess). -->
+        <exclude domain="sharedpref" path="sonara_access.xml" />
+        <exclude domain="sharedpref" path="sonara_access_plain.xml" />
         <exclude domain="sharedpref" path="bitchord_sources.xml" />
         <exclude domain="sharedpref" path="bitchord_sources_plain.xml" />
         <!-- Tester code: a credential for this phone's owner (see AddonAuth). -->
@@ -19,6 +22,9 @@
     <device-transfer>
         <exclude domain="sharedpref" path="bitchord_auth.xml" />
         <exclude domain="sharedpref" path="bitchord_auth_plain.xml" />
+        <!-- The access grant: the hash of the code that unlocked this device (see SonaraAccess). -->
+        <exclude domain="sharedpref" path="sonara_access.xml" />
+        <exclude domain="sharedpref" path="sonara_access_plain.xml" />
         <exclude domain="sharedpref" path="bitchord_sources.xml" />
         <exclude domain="sharedpref" path="bitchord_sources_plain.xml" />
         <!-- Tester code: a credential for this phone's owner (see AddonAuth). -->

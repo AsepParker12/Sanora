@@ -125,6 +125,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.music.bitchord.auth.DiscordLoginScreen
+import com.music.bitchord.auth.SonaraAccess
 import com.music.bitchord.auth.SpotifyLoginScreen
 import com.music.bitchord.auth.WebSessionMode
 import com.music.bitchord.auth.YtMusicLoginScreen
@@ -186,6 +187,7 @@ import com.music.bitchord.ui.screens.ListenTogetherScreen
 import com.music.bitchord.ui.screens.PartyServerEditor
 import com.music.bitchord.ui.screens.SignatureApiEditor
 import com.music.bitchord.ui.screens.SettingsScreen
+import com.music.bitchord.ui.screens.SonaraAccessScreen
 import com.music.bitchord.ui.screens.SourceEditorAlert
 import com.music.bitchord.ui.screens.SourcesScreen
 import com.music.bitchord.data.sources.TrackMatcher
@@ -439,6 +441,17 @@ class MainActivity : AppCompatActivity() {
                     LocalLiquidGlassEnabled provides liquidGlassEnabled,
                     LocalAppBackdrop provides appBackdrop,
                 ) {
+                // The access gate stands in front of everything: until a code
+                // has opened the app on this device there is no app to draw,
+                // only the gate itself — see SonaraAccess. The stored grant is
+                // read once here and re-validated there on every launch.
+                val accessContext = LocalContext.current
+                var accessLevel by remember {
+                    mutableStateOf(SonaraAccess.grantedLevel(accessContext))
+                }
+                if (accessLevel == null) {
+                    SonaraAccessScreen(onUnlocked = { accessLevel = it })
+                } else {
                 // The window's width, measured rather than asked for.
                 //
                 // `Configuration.screenWidthDp` is the wrong question here: in a
@@ -457,6 +470,7 @@ class MainActivity : AppCompatActivity() {
                         windowHeight = maxHeight,
                         appBackdrop = appBackdrop,
                     )
+                }
                 }
                 }
             }
