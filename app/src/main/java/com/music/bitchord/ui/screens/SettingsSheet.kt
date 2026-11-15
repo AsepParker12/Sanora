@@ -3020,6 +3020,7 @@ fun SettingsChoicePage(
                     selected = selected,
                     label = { it.label() },
                     detail = { it.description() },
+                    footer = null,
                 ) { accent ->
                     AppSettings.setAppAccent(accent)
                     onChosen()
