@@ -3,7 +3,7 @@ name: Check
 on:
   push:
     branches: [main]
-  pull_request:
+  pull_request
 
 concurrency:
   group: check-${{ github.workflow }}-${{ github.ref }}
@@ -54,10 +54,18 @@ jobs:
           name: sonara-dev-debug
           path: app/build/outputs/apk/dev/debug/*.apk
 
+      - name: Build the optimised dev APK
+        run: ./gradlew assembleDevRelease
+
+      - name: Upload the optimised dev APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonara-dev-release
+          path: app/build/outputs/apk/dev/release/*.apk
+
       - name: Upload test reports
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: android-test-reports
           path: app/build/reports/tests/
-
