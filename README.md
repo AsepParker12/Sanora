@@ -26,11 +26,10 @@ Requires JDK 17 and the Android SDK.
 ./gradlew assembleDevDebug      # dev debug APK (applicationId com.sonara.dev)
 ```
 
-## Credits & License
+## License
 
-SONARA is based on [BitChord](https://github.com/kushagrasinghx/BitChord) by
-Kushagra Singh and contributors, and is licensed under the same terms:
-the GNU General Public License v3.0 — see [LICENSE](LICENSE).
+SONARA is licensed under the GNU General Public License v3.0 — see
+[LICENSE](LICENSE).
 
 > SONARA is not affiliated with, endorsed by, or connected to YouTube or
 > Google in any way. Use it at your own discretion.
