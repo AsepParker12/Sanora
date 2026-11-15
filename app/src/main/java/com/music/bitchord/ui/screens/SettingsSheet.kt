@@ -1806,7 +1806,7 @@ fun SettingsScreen(
                 withLink(LinkAnnotation.Url("https://github.com/AsepParker12", linkStyles)) {
                     append("Developer")
                 }
-                append("\nBased on BitChord (GPL-3.0)")
+                append("\nLicensed under GPL-3.0")
             },
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
