@@ -189,7 +189,11 @@ android {
             )
             // Null without a keystore to sign with: the build then produces
             // app-release-unsigned.apk instead of failing outright.
+            // Sonara: fall back to the debug key so CI can ship an installable
+            // optimised (R8) dev build — a debug build's UI is interpreted at
+            // runtime and scrolls noticeably worse.
             signingConfig = signingConfigs.findByName("release")
+                ?: signingConfigs.getByName("debug")
         }
         /*
          * The release build, installable next to the dev and prod apps: same R8,
