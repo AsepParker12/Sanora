@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">SONARA</string>
+    <string name="app_name">Sonara</string>
     <string name="playback_channel_name">מתנגן כעת</string>
     <string name="download_channel_name">הורדות</string>
     <string name="download_channel_description">שירים שנשמרים בתיקיית המוזיקה שלך</string>
@@ -106,10 +106,10 @@
     <string name="dolby_atmos_open_failed">לא ניתן לפתוח את הגדרות Dolby Atmos</string>
     <string name="update_available">עדכון זמין: גרסה %1$s</string>
     <string name="software_update">עדכון תוכנה</string>
-    <string name="update_available_body">SONARA %1$s זמין להורדה.</string>
-    <string name="update_downloading_body">מוריד את SONARA %1$s…</string>
-    <string name="update_ready_body">SONARA %1$s מוכן להתקנה.</string>
-    <string name="update_failed_body">לא ניתן היה להוריד את SONARA %1$s.</string>
+    <string name="update_available_body">Sonara %1$s זמין להורדה.</string>
+    <string name="update_downloading_body">מוריד את Sonara %1$s…</string>
+    <string name="update_ready_body">Sonara %1$s מוכן להתקנה.</string>
+    <string name="update_failed_body">לא ניתן היה להוריד את Sonara %1$s.</string>
     <string name="download_now">הורדה עכשיו</string>
     <string name="install_now">התקנה עכשיו</string>
     <string name="later">מאוחר יותר</string>

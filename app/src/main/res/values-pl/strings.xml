@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">SONARA</string>
+    <string name="app_name">Sonara</string>
     <string name="playback_channel_name">Teraz gra</string>
     <string name="download_channel_name">Pobrane</string>
     <string name="download_channel_description">Utwory są zapisywane do folderu Muzyka</string>
@@ -107,10 +107,10 @@
     <string name="dolby_atmos_open_failed">Nie można było otworzyć ustawień Dolby Atmos</string>
     <string name="update_available">Dostępna aktualizacja: v%1$s</string>
     <string name="software_update">Aktualizacja oprogramowania</string>
-    <string name="update_available_body">SONARA %1$s jest dostępny do pobrania.</string>
-    <string name="update_downloading_body">Pobieranie SONARA %1$s…</string>
-    <string name="update_ready_body">SONARA %1$s jest gotowy do zainstalowania.</string>
-    <string name="update_failed_body">Nie udało się pobrać SONARA %1$s.</string>
+    <string name="update_available_body">Sonara %1$s jest dostępny do pobrania.</string>
+    <string name="update_downloading_body">Pobieranie Sonara %1$s…</string>
+    <string name="update_ready_body">Sonara %1$s jest gotowy do zainstalowania.</string>
+    <string name="update_failed_body">Nie udało się pobrać Sonara %1$s.</string>
     <string name="download_now">Pobierz teraz</string>
     <string name="install_now">Zainstaluj teraz</string>
     <string name="later">Później</string>

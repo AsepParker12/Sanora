@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SONARA</string>
+    <string name="app_name">Sonara</string>
     <string name="playback_channel_name">กำลังเล่น</string>
     <string name="download_channel_name">การดาวน์โหลด</string>
     <string name="download_channel_description">เพลงที่กำลังบันทึกลงในโฟลเดอร์เพลงของคุณ</string>
@@ -103,10 +103,10 @@
     <string name="dolby_atmos_open_failed">เปิดการตั้งค่า Dolby Atmos ไม่ได้</string>
     <string name="update_available">มีอัปเดต: v%1$s</string>
     <string name="software_update">การอัปเดตซอฟต์แวร์</string>
-    <string name="update_available_body">SONARA %1$s พร้อมให้ดาวน์โหลดแล้ว</string>
-    <string name="update_downloading_body">กำลังดาวน์โหลด SONARA %1$s…</string>
-    <string name="update_ready_body">SONARA %1$s พร้อมติดตั้งแล้ว</string>
-    <string name="update_failed_body">ดาวน์โหลด SONARA %1$s ไม่สำเร็จ</string>
+    <string name="update_available_body">Sonara %1$s พร้อมให้ดาวน์โหลดแล้ว</string>
+    <string name="update_downloading_body">กำลังดาวน์โหลด Sonara %1$s…</string>
+    <string name="update_ready_body">Sonara %1$s พร้อมติดตั้งแล้ว</string>
+    <string name="update_failed_body">ดาวน์โหลด Sonara %1$s ไม่สำเร็จ</string>
     <string name="download_now">ดาวน์โหลดตอนนี้</string>
     <string name="install_now">ติดตั้งตอนนี้</string>
     <string name="later">ภายหลัง</string>

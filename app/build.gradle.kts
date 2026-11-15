@@ -133,7 +133,7 @@ android {
         create("dev") {
             dimension = "env"
             applicationId = "com.sonara.dev"
-            resValue("string", "app_name", "SONARA Dev")
+            resValue("string", "app_name", "Sonara")
         }
         create("prod") {
             dimension = "env"

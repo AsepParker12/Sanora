@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SONARA</string>
+    <string name="app_name">Sonara</string>
     <string name="playback_channel_name">अभी चल रहा है</string>
     <string name="download_channel_name">डाउनलोड</string>
     <string name="download_channel_description">आपके संगीत फ़ोल्डर में सेव हो रहे गाने</string>
@@ -104,10 +104,10 @@
     <string name="dolby_atmos_open_failed">Dolby Atmos सेटिंग्स नहीं खोली जा सकीं</string>
     <string name="update_available">अपडेट उपलब्ध है: v%1$s</string>
     <string name="software_update">सॉफ़्टवेयर अपडेट</string>
-    <string name="update_available_body">SONARA %1$s डाउनलोड के लिए उपलब्ध है।</string>
-    <string name="update_downloading_body">SONARA %1$s डाउनलोड हो रहा है…</string>
-    <string name="update_ready_body">SONARA %1$s इंस्टॉल के लिए तैयार है।</string>
-    <string name="update_failed_body">SONARA %1$s डाउनलोड नहीं हो सका।</string>
+    <string name="update_available_body">Sonara %1$s डाउनलोड के लिए उपलब्ध है।</string>
+    <string name="update_downloading_body">Sonara %1$s डाउनलोड हो रहा है…</string>
+    <string name="update_ready_body">Sonara %1$s इंस्टॉल के लिए तैयार है।</string>
+    <string name="update_failed_body">Sonara %1$s डाउनलोड नहीं हो सका।</string>
     <string name="download_now">अभी डाउनलोड करें</string>
     <string name="install_now">अभी इंस्टॉल करें</string>
     <string name="later">बाद में</string>
