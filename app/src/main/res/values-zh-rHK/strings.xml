@@ -1395,6 +1395,7 @@
     <string name="show_listen_together_button">顯示「一起聽」按鈕</string>
     <string name="show_listen_together_button_subtitle">關閉後，播放器在歌詞和播放佇列之間只顯示音訊輸出按鈕</string>
     <string name="font">字型</string>
+    <string name="accent_color">Accent colour</string>
     <string name="font_default">預設</string>
     <string name="font_legacy">舊版</string>
     <string name="font_default_subtitle">SF Pro Display · Apple Music 字重</string>

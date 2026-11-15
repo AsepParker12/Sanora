@@ -1430,6 +1430,7 @@
     <string name="show_listen_together_button">Mostrar botão Ouvir junto</string>
     <string name="show_listen_together_button_subtitle">Desativado, o player mostra apenas o botão de saída de áudio entre a letra e a fila</string>
     <string name="font">Fonte</string>
+    <string name="accent_color">Accent colour</string>
     <string name="font_default">Padrão</string>
     <string name="font_legacy">Clássica</string>
     <string name="font_default_subtitle">SF Pro Display · Pesos do Apple Music</string>

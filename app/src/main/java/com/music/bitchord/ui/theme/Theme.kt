@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.music.bitchord.R
+import com.music.bitchord.data.settings.AppAccent
 import com.music.bitchord.data.settings.AppFont
 
 // Apple Music's signature red. No longer the primary accent, but kept for the
@@ -101,6 +102,115 @@ private val LightColors = lightColorScheme(
     inverseOnSurface = Color(0xFFF5F3FF),
     inversePrimary = Color(0xFFA78BFA),
 )
+
+// Accent variants of the Aurora schemes: only the accent roles (primary,
+// secondary, tertiary, their containers and inversePrimary) are swapped, via
+// copy(), so backgrounds and surfaces stay the Aurora-tinted neutrals above
+// whatever accent is picked — see AppAccent. AURORA is DarkColors/LightColors
+// themselves, unchanged.
+private val DarkRose = DarkColors.copy(
+    primary = Color(0xFFFDA4AF),
+    onPrimary = Color(0xFF4C0519),
+    primaryContainer = Color(0xFF881337),
+    onPrimaryContainer = Color(0xFFFFE4E6),
+    secondary = Color(0xFFF9A8D4),
+    onSecondary = Color(0xFF500724),
+    secondaryContainer = Color(0xFF831843),
+    onSecondaryContainer = Color(0xFFFCE7F3),
+    tertiary = Color(0xFFF0ABFC),
+    onTertiary = Color(0xFF4A044E),
+    tertiaryContainer = Color(0xFF701A75),
+    onTertiaryContainer = Color(0xFFFAE8FF),
+    inversePrimary = Color(0xFFE11D48),
+)
+
+private val LightRose = LightColors.copy(
+    primary = Color(0xFFE11D48),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFFFE4E6),
+    onPrimaryContainer = Color(0xFF881337),
+    secondary = Color(0xFFDB2777),
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFFFCE7F3),
+    onSecondaryContainer = Color(0xFF831843),
+    tertiary = Color(0xFFC026D3),
+    onTertiary = Color.White,
+    tertiaryContainer = Color(0xFFFAE8FF),
+    onTertiaryContainer = Color(0xFF701A75),
+    inversePrimary = Color(0xFFFDA4AF),
+)
+
+private val DarkEmerald = DarkColors.copy(
+    primary = Color(0xFF6EE7B7),
+    onPrimary = Color(0xFF022C22),
+    primaryContainer = Color(0xFF064E3B),
+    onPrimaryContainer = Color(0xFFD1FAE5),
+    secondary = Color(0xFF5EEAD4),
+    onSecondary = Color(0xFF042F2E),
+    secondaryContainer = Color(0xFF134E4A),
+    onSecondaryContainer = Color(0xFFCCFBF1),
+    tertiary = Color(0xFFA3E635),
+    onTertiary = Color(0xFF1A2E05),
+    tertiaryContainer = Color(0xFF3F6212),
+    onTertiaryContainer = Color(0xFFECFCCB),
+    inversePrimary = Color(0xFF059669),
+)
+
+private val LightEmerald = LightColors.copy(
+    primary = Color(0xFF059669),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFD1FAE5),
+    onPrimaryContainer = Color(0xFF064E3B),
+    secondary = Color(0xFF0D9488),
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFFCCFBF1),
+    onSecondaryContainer = Color(0xFF134E4A),
+    tertiary = Color(0xFF65A30D),
+    onTertiary = Color.White,
+    tertiaryContainer = Color(0xFFECFCCB),
+    onTertiaryContainer = Color(0xFF3F6212),
+    inversePrimary = Color(0xFF6EE7B7),
+)
+
+private val DarkSunset = DarkColors.copy(
+    primary = Color(0xFFFDBA74),
+    onPrimary = Color(0xFF431407),
+    primaryContainer = Color(0xFF7C2D12),
+    onPrimaryContainer = Color(0xFFFFEDD5),
+    secondary = Color(0xFFFCD34D),
+    onSecondary = Color(0xFF451A03),
+    secondaryContainer = Color(0xFF78350F),
+    onSecondaryContainer = Color(0xFFFEF3C7),
+    tertiary = Color(0xFFFCA5A5),
+    onTertiary = Color(0xFF450A0A),
+    tertiaryContainer = Color(0xFF7F1D1D),
+    onTertiaryContainer = Color(0xFFFEE2E2),
+    inversePrimary = Color(0xFFEA580C),
+)
+
+private val LightSunset = LightColors.copy(
+    primary = Color(0xFFEA580C),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFFFEDD5),
+    onPrimaryContainer = Color(0xFF7C2D12),
+    secondary = Color(0xFFD97706),
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFFFEF3C7),
+    onSecondaryContainer = Color(0xFF78350F),
+    tertiary = Color(0xFFDC2626),
+    onTertiary = Color.White,
+    tertiaryContainer = Color(0xFFFEE2E2),
+    onTertiaryContainer = Color(0xFF7F1D1D),
+    inversePrimary = Color(0xFFFDBA74),
+)
+
+/** The scheme in force: [accent]'s family, in its dark or light cut. */
+private fun sonaraColorScheme(darkTheme: Boolean, accent: AppAccent) = when (accent) {
+    AppAccent.AURORA -> if (darkTheme) DarkColors else LightColors
+    AppAccent.ROSE -> if (darkTheme) DarkRose else LightRose
+    AppAccent.EMERALD -> if (darkTheme) DarkEmerald else LightEmerald
+    AppAccent.SUNSET -> if (darkTheme) DarkSunset else LightSunset
+}
 
 // Rounder than the Material defaults upstream shipped with (4/8/12/16/28),
 // so cards, sheets and chips read as SONARA's rather than stock.
@@ -207,10 +317,11 @@ private fun Typography.withFamily(family: FontFamily) = Typography(
 fun BitChordTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     font: AppFont = AppFont.DEFAULT,
+    accent: AppAccent = AppAccent.AURORA,
     content: @Composable () -> Unit,
 ) {
     MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else LightColors,
+        colorScheme = sonaraColorScheme(darkTheme, accent),
         shapes = SonaraShapes,
         typography = when (font) {
             AppFont.DEFAULT -> BitChordTypography

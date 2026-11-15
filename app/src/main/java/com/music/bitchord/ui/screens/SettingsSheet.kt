@@ -168,6 +168,7 @@ import com.music.bitchord.data.sources.DeviceCodecs
 import com.music.bitchord.data.settings.AudioQuality
 import com.music.bitchord.data.settings.DownloadQuality
 import com.music.bitchord.data.settings.ThemeMode
+import com.music.bitchord.data.settings.AppAccent
 import com.music.bitchord.data.settings.AppFont
 import com.music.bitchord.data.settings.PlayerTheme
 import com.music.bitchord.data.stats.Backup
@@ -262,6 +263,7 @@ fun SettingsScreen(
     val translationLanguage by AppSettings.translationLanguage.collectAsStateWithLifecycle()
     val theme by AppSettings.themeMode.collectAsStateWithLifecycle()
     val appFont by AppSettings.appFont.collectAsStateWithLifecycle()
+    val appAccent by AppSettings.appAccent.collectAsStateWithLifecycle()
     val sessionId by AppSettings.audioSessionId.collectAsStateWithLifecycle()
     val outputPcmMode by AppSettings.outputPcmMode.collectAsStateWithLifecycle()
     val preferUsbDac by AppSettings.preferUsbDac.collectAsStateWithLifecycle()
@@ -1017,6 +1019,16 @@ fun SettingsScreen(
                     subtitle = appFont.description(),
                     value = appFont.localizedLabel(),
                     onClick = { onOpenChoice(SettingsChoiceKind.FONT) },
+                )
+            }
+            val accentTitle = stringResource(R.string.accent_color)
+            row(accentTitle, "accent", "colour", "color") {
+                SettingsRow(
+                    icon = SfIcons.Gradient,
+                    title = accentTitle,
+                    subtitle = appAccent.description(),
+                    value = appAccent.label(),
+                    onClick = { onOpenChoice(SettingsChoiceKind.ACCENT) },
                 )
             }
             val reduceAnimationTitle = stringResource(R.string.reduce_animation)
@@ -2082,6 +2094,26 @@ private fun PlayerTheme.description(): String = stringResource(
     },
 )
 
+/**
+ * The accent families' names. Hardcoded English, like the About colophon's
+ * lines: the names are SONARA's own labels for its colour families, and the
+ * row's title ([R.string.accent_color]) is the part that localises.
+ */
+private fun AppAccent.label(): String = when (this) {
+    AppAccent.AURORA -> "Aurora"
+    AppAccent.ROSE -> "Rose"
+    AppAccent.EMERALD -> "Emerald"
+    AppAccent.SUNSET -> "Sunset"
+}
+
+/** The two ends each [AppAccent] runs between, named under its label. */
+private fun AppAccent.description(): String = when (this) {
+    AppAccent.AURORA -> "Violet into cyan — SONARA's own"
+    AppAccent.ROSE -> "Rose into pink"
+    AppAccent.EMERALD -> "Emerald into teal"
+    AppAccent.SUNSET -> "Orange into amber"
+}
+
 @Composable
 private fun AppFont.localizedLabel(): String = stringResource(
     when (this) {
@@ -2847,6 +2879,7 @@ enum class SettingsChoiceKind(@param:StringRes val title: Int) {
     AUTOMIX_PERFORMANCE(R.string.automix_performance),
     BIT_PERFECT(R.string.bit_perfect_output),
     FONT(R.string.font),
+    ACCENT(R.string.accent_color),
 }
 
 /** The main page's list of categories: a glyph and a name each, and a chevron into it. */
@@ -2976,6 +3009,19 @@ fun SettingsChoicePage(
                     footer = stringResource(R.string.font_footer),
                 ) { font ->
                     AppSettings.setAppFont(font)
+                    onChosen()
+                }
+            }
+
+            SettingsChoiceKind.ACCENT -> {
+                val selected by AppSettings.appAccent.collectAsStateWithLifecycle()
+                ChoiceGroup(
+                    options = AppAccent.entries,
+                    selected = selected,
+                    label = { it.label() },
+                    detail = { it.description() },
+                ) { accent ->
+                    AppSettings.setAppAccent(accent)
                     onChosen()
                 }
             }

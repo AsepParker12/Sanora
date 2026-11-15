@@ -1430,6 +1430,7 @@
     <string name="show_listen_together_button">הצגת הכפתור להאזין ביחד</string>
     <string name="show_listen_together_button_subtitle">כשהאפשרות כבויה, הנגן מציג רק את כפתור פלט השמע בין המילים לתור ההשמעה</string>
     <string name="font">גופן</string>
+    <string name="accent_color">Accent colour</string>
     <string name="font_default">ברירת מחדל</string>
     <string name="font_legacy">קלאסי</string>
     <string name="font_default_subtitle">SF Pro Display · משקלי Apple Music</string>

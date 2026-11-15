@@ -1426,6 +1426,7 @@
     <string name="show_listen_together_button">Afficher le bouton Écouter ensemble</string>
     <string name="show_listen_together_button_subtitle">Si désactivé, le lecteur n\'affiche que le bouton de sortie audio entre les paroles et la file d\'attente</string>
     <string name="font">Police</string>
+    <string name="accent_color">Accent colour</string>
     <string name="font_default">Par défaut</string>
     <string name="font_legacy">Classique</string>
     <string name="font_default_subtitle">SF Pro Display · Graisses d\'Apple Music</string>

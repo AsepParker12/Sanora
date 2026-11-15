@@ -1465,6 +1465,7 @@
     <string name="show_listen_together_button">Pokaż przycisk Słuchajcie razem</string>
     <string name="show_listen_together_button_subtitle">Gdy wyłączone, odtwarzacz pokazuje między tekstem a kolejką tylko przycisk wyjścia audio</string>
     <string name="font">Czcionka</string>
+    <string name="accent_color">Accent colour</string>
     <string name="font_default">Domyślna</string>
     <string name="font_legacy">Klasyczna</string>
     <string name="font_default_subtitle">SF Pro Display · Grubości z Apple Music</string>

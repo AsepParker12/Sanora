@@ -1403,6 +1403,7 @@
     <string name="show_listen_together_button">「一緒に聴く」ボタンを表示</string>
     <string name="show_listen_together_button_subtitle">オフにすると、プレーヤーの歌詞と再生キューの間にはオーディオ出力ボタンだけが表示されます</string>
     <string name="font">フォント</string>
+    <string name="accent_color">Accent colour</string>
     <string name="font_default">デフォルト</string>
     <string name="font_legacy">従来</string>
     <string name="font_default_subtitle">SF Pro Display · Apple Music のウェイト</string>

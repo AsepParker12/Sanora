@@ -1364,6 +1364,7 @@
     <string name="show_listen_together_button">Mostra il pulsante Ascoltare insieme</string>
     <string name="show_listen_together_button_subtitle">Se disattivato, il lettore mostra solo il pulsante dell\'uscita audio tra il testo e la coda</string>
     <string name="font">Carattere</string>
+    <string name="accent_color">Accent colour</string>
     <string name="font_default">Predefinito</string>
     <string name="font_legacy">Classico</string>
     <string name="font_default_subtitle">SF Pro Display · Pesi di Apple Music</string>

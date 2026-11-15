@@ -1425,6 +1425,7 @@
     <string name="show_listen_together_button">Schaltfläche „Gemeinsam hören“ anzeigen</string>
     <string name="show_listen_together_button_subtitle">Wenn aus, zeigt der Player zwischen Liedtexten und Warteschlange nur die Schaltfläche für die Audioausgabe</string>
     <string name="font">Schriftart</string>
+    <string name="accent_color">Accent colour</string>
     <string name="font_default">Standard</string>
     <string name="font_legacy">Klassisch</string>
     <string name="font_default_subtitle">SF Pro Display · Schriftschnitte wie bei Apple Music</string>

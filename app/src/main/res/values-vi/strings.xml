@@ -1342,6 +1342,7 @@
     <string name="show_listen_together_button">Hiện nút Listen together</string>
     <string name="show_listen_together_button_subtitle">Khi tắt, trình phát chỉ hiện nút đầu ra âm thanh giữa lời bài hát và hàng đợi</string>
     <string name="font">Phông chữ</string>
+    <string name="accent_color">Accent colour</string>
     <string name="font_default">Mặc định</string>
     <string name="font_legacy">Cổ điển</string>
     <string name="font_default_subtitle">SF Pro Display · Độ đậm của Apple Music</string>

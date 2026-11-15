@@ -1382,6 +1382,7 @@
     <string name="show_listen_together_button">Birlikte dinle düğmesini göster</string>
     <string name="show_listen_together_button_subtitle">Kapalıyken oynatıcı, şarkı sözleri ile sıra arasında yalnızca ses çıkışı düğmesini gösterir</string>
     <string name="font">Yazı tipi</string>
+    <string name="accent_color">Accent colour</string>
     <string name="font_default">Varsayılan</string>
     <string name="font_legacy">Eski</string>
     <string name="font_default_subtitle">SF Pro Display · Apple Music ağırlıkları</string>

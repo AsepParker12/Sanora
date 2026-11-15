@@ -1275,6 +1275,7 @@
     <string name="show_listen_together_button">함께 듣기 버튼 표시</string>
     <string name="show_listen_together_button_subtitle">끄면 플레이어의 가사와 대기열 사이에 오디오 출력 버튼만 표시됩니다</string>
     <string name="font">글꼴</string>
+    <string name="accent_color">Accent colour</string>
     <string name="font_default">기본</string>
     <string name="font_legacy">이전</string>
     <string name="font_default_subtitle">SF Pro Display · Apple Music 굵기</string>

@@ -1457,6 +1457,7 @@
     <string name="show_listen_together_button">Показывать кнопку «Слушать вместе»</string>
     <string name="show_listen_together_button_subtitle">Если выключено, плеер показывает между текстом песни и очередью только кнопку аудиовыхода</string>
     <string name="font">Шрифт</string>
+    <string name="accent_color">Accent colour</string>
     <string name="font_default">По умолчанию</string>
     <string name="font_legacy">Прежний</string>
     <string name="font_default_subtitle">SF Pro Display · Начертания Apple Music</string>

@@ -135,6 +135,15 @@ enum class ThemeMode(val label: String) {
 enum class AppFont { DEFAULT, LEGACY }
 
 /**
+ * The family the theme's accent roles (primary, secondary, tertiary and their
+ * containers) are drawn from. [AURORA] is SONARA's violet-into-cyan identity,
+ * the exact schemes the app shipped with; the others swap only those accent
+ * roles — backgrounds and surfaces keep the Aurora-tinted neutrals either
+ * way. Persisted by name, like [AppFont].
+ */
+enum class AppAccent { AURORA, ROSE, EMERALD, SUNSET }
+
+/**
  * Which of the equaliser's two tabs is driving the sound.
  *
  * One at a time rather than both at once: they are two ways of describing the
@@ -411,6 +420,7 @@ object AppSettings {
     val playbackSpeed = MutableStateFlow(1.0f)
     val themeMode = MutableStateFlow(ThemeMode.DARK)
     val appFont = MutableStateFlow(AppFont.DEFAULT)
+    val appAccent = MutableStateFlow(AppAccent.AURORA)
 
     /** Keep playing similar music once the queue runs out. */
     val autoplay = MutableStateFlow(true)
@@ -1014,6 +1024,9 @@ object AppSettings {
         appFont.value = runCatching {
             AppFont.valueOf(prefs.getString(KEY_APP_FONT, null) ?: AppFont.DEFAULT.name)
         }.getOrDefault(AppFont.DEFAULT)
+        appAccent.value = runCatching {
+            AppAccent.valueOf(prefs.getString(KEY_APP_ACCENT, null) ?: AppAccent.AURORA.name)
+        }.getOrDefault(AppAccent.AURORA)
         autoplay.value = prefs.getBoolean(KEY_AUTOPLAY, true)
         shuffleEnabled.value = prefs.getBoolean(KEY_SHUFFLE_ENABLED, false)
         repeatMode.value = prefs.getInt(KEY_REPEAT_MODE, Player.REPEAT_MODE_OFF)
@@ -1409,6 +1422,11 @@ object AppSettings {
     fun setAppFont(value: AppFont) {
         appFont.value = value
         prefs.edit().putString(KEY_APP_FONT, value.name).apply()
+    }
+
+    fun setAppAccent(value: AppAccent) {
+        appAccent.value = value
+        prefs.edit().putString(KEY_APP_ACCENT, value.name).apply()
     }
 
     fun setReduceAnimation(value: Boolean) {
@@ -2279,6 +2297,7 @@ object AppSettings {
     private const val KEY_SPEED = "playback_speed"
     private const val KEY_THEME = "theme_mode"
     private const val KEY_APP_FONT = "app_font"
+    private const val KEY_APP_ACCENT = "app_accent"
     private const val KEY_AUTOPLAY = "autoplay"
     private const val KEY_SHUFFLE_ENABLED = "shuffle_enabled"
     private const val KEY_REPEAT_MODE = "repeat_mode"
