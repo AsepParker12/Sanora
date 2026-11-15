@@ -233,12 +233,6 @@ internal fun PlayerScrubber(
             mixing = mixing,
             mixPulse = mixPulse,
             transitionWindow = transitionWindow,
-            // SONARA's scrubber: the played stretch runs violet into cyan
-            // (the brand colours written out — the theme tokens live in the
-            // app module, which this one cannot see).
-            activeBrush = Brush.horizontalGradient(
-                listOf(Color(0xFF7C3AED), Color(0xFF06B6D4)),
-            ),
         )
         Box(
             modifier = Modifier
@@ -479,9 +473,7 @@ internal fun TransportRow(
     onNext: () -> Unit,
     compact: Boolean = false,
 ) {
-    // SONARA: the play glyph a step larger than upstream's 58/74, sitting on
-    // the aurora disc [TransportGlyph] draws behind it.
-    val playSize = if (compact) 62.dp else 78.dp
+    val playSize = if (compact) 58.dp else 74.dp
     val playTouch = if (compact) 76.dp else 92.dp
     val skipSize = if (compact) 44.dp else PLAYER_SKIP_ICON_SIZE
     Row(
@@ -519,11 +511,6 @@ internal fun TransportRow(
                 touchSize = playTouch,
                 onClick = onPlayPause,
                 haptic = if (isPlaying) Haptic.Pause else Haptic.Resume,
-                // The brand colours written out: the theme tokens live in the
-                // app module, which this one cannot see.
-                containerBrush = Brush.linearGradient(
-                    listOf(Color(0xFF7C3AED), Color(0xFF06B6D4)),
-                ),
             )
         }
         TransportGlyph(
@@ -817,8 +804,6 @@ private fun TransportGlyph(
     haptic: Haptic = Haptic.Tap,
     /** Vertical squash of the glyph alone; its width and touch box are untouched. */
     heightScale: Float = 1f,
-    /** A filled disc drawn behind the glyph — SONARA's aurora play button. */
-    containerBrush: Brush? = null,
 ) {
     val haptics = rememberHaptics()
     // Faded rather than hidden: the row keeps its shape at the ends of a queue.
@@ -839,13 +824,6 @@ private fun TransportGlyph(
             },
         contentAlignment = Alignment.Center,
     ) {
-        if (containerBrush != null) {
-            Box(
-                Modifier
-                    .size(size + 12.dp)
-                    .background(containerBrush, CircleShape),
-            )
-        }
         Icon(
             painter = painterResource(icon),
             contentDescription = contentDescription,

@@ -107,8 +107,8 @@ private const val LANDSCAPE_PANE_FADE_OUT_MS = 140
 /** Which of its three things the player's content column is showing. */
 internal enum class PlayerPane { Main, Lyrics, Queue }
 
-/** The landscape sleeve's corner radius, at rest. SONARA: matched to the portrait card's 24dp. */
-internal val LANDSCAPE_ART_CORNER = 24.dp
+/** The landscape sleeve's corner radius, at rest. */
+internal val LANDSCAPE_ART_CORNER = 10.dp
 
 /** The landscape sleeve's shape at rest, for a caller with no docking to do. */
 private val LandscapeArtShape = RoundedCornerShape(LANDSCAPE_ART_CORNER)

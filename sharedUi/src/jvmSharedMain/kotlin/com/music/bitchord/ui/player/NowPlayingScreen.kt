@@ -3164,9 +3164,7 @@ fun NowPlayingScreen(
                         // it docks.
                         fun sleeveShown(): Float = bannerShown() * dockT()
                         fun sleeveCorner(): Dp {
-                            // SONARA: a much rounder card than upstream's 8dp —
-                            // the hero artwork reads as its own soft tile.
-                            val corner = 24.dp * (1f - sleeveShown())
+                            val corner = 8.dp * (1f - sleeveShown())
                             val t = dockT()
                             return if (dock == null || t >= 1f) corner else lerp(dock.miniArtCorner(), corner, t)
                         }

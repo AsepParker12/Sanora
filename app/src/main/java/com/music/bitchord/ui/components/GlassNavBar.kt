@@ -62,7 +62,6 @@ import com.music.bitchord.ui.components.floatingtabbar.FloatingTabBarDefaults
 import com.music.bitchord.ui.components.floatingtabbar.FloatingTabBarScrollConnection
 import com.music.bitchord.ui.haptics.Haptic
 import com.music.bitchord.ui.haptics.rememberHaptics
-import com.music.bitchord.ui.theme.SonaraViolet
 import com.music.bitchord.playback.MusicOnlyPlayback
 import com.music.bitchord.ui.player.PlayerDock
 import com.music.bitchord.ui.player.AndroidMusicVideo
@@ -134,11 +133,8 @@ fun GlassNavBar(
 
     // A factory, not a value — see the note in FloatingTabBar's header. Each of
     // the three surfaces gets its own glass modifier and so its own shape cache.
-    // SONARA's glass tint in place of the theme's: the aurora violet laid
-    // thinly over the backdrop, so the bar reads violet rather than neutral.
-    val glassSurface: @Composable () -> Modifier = {
-        Modifier.liquidGlass(shape = pillShape, surfaceTint = SonaraViolet.copy(alpha = 0.15f))
-    }
+    // The theme's own glass tint, as the liquid top bar has it — no white wash.
+    val glassSurface: @Composable () -> Modifier = { Modifier.liquidGlass(shape = pillShape) }
 
     FloatingTabBar(
         selectedTabKey = selectedIndex,
@@ -194,9 +190,7 @@ fun GlassNavBar(
         colors = FloatingTabBarDefaults.colors(
             backgroundColor = Color.Transparent,
             accessoryBackgroundColor = Color.Transparent,
-            // The lifted lens's fill: SONARA violet, so the travelling pill is
-            // the brand colour on its way to the aurora gradient it lands as.
-            indicatorColor = SonaraViolet,
+            indicatorColor = glassIndicatorColor(),
         ),
         // Flat, because the glass is not. Every surface here already draws its
         // own [Shadow.Default] as part of the backdrop pass, and the library's
@@ -236,10 +230,6 @@ fun GlassNavBar(
         tabs.forEachIndexed { index, tab ->
             val isSelected = index == selectedIndex
             val tint = if (isSelected) selectedColor else unselectedColor
-            // A selected regular tab sits on the aurora gradient pill, so its
-            // glyph and label are white in both themes. The standalone tab has
-            // no pill behind it and keeps the glass tint above.
-            val tabTint = if (isSelected) Color.White else unselectedColor
             val onClick = {
                 if (!isSelected) haptics.play(Haptic.Select)
                 currentOnTabSelected(index)
@@ -264,7 +254,7 @@ fun GlassNavBar(
                         Icon(
                             imageVector = tab.icon,
                             contentDescription = tab.label,
-                            tint = tabTint,
+                            tint = tint,
                             modifier = Modifier.size(TAB_ICON_SIZE),
                         )
                     },
@@ -272,7 +262,7 @@ fun GlassNavBar(
                         Text(
                             text = tab.label,
                             style = tabLabelStyle(),
-                            color = tabTint,
+                            color = tint,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             // The library's Tab stacks the glyph and the label
