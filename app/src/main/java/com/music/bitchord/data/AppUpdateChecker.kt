@@ -18,6 +18,7 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.Request
 import java.io.File
+import java.security.MessageDigest
 
 /**
  * SONARA ships as a sideloaded APK off GitHub Releases rather than through
@@ -38,6 +39,12 @@ object AppUpdateChecker {
         val apkUrl: String?,
         /** The release's own Markdown body, shown as this update's "what's new". */
         val notes: String?,
+        /**
+         * Download URL of the chosen APK's checksum asset
+         * (`<apk asset name>.sha256`), or null when the release predates
+         * checksum publishing — those updates install unverified, as before.
+         */
+        val checksumUrl: String? = null,
     )
 
     private const val CACHE_SUBDIR = "updates"
@@ -74,11 +81,16 @@ object AppUpdateChecker {
             val release = json.parseToJsonElement(body) as? JsonObject ?: return@runCatching
             val tag = release["tag_name"]?.jsonPrimitive?.contentOrNull ?: return@runCatching
             val url = release["html_url"]?.jsonPrimitive?.contentOrNull ?: return@runCatching
-            val apkUrl = apkAssetUrl(release)
+            val apk = apkAsset(release)
+            // The checksum asset is the APK asset's own name plus ".sha256";
+            // the asset picker keys assets by name without the ".apk" suffix.
+            val checksumUrl = apk?.let { (baseName, _) ->
+                assetUrl(release, "$baseName.apk.sha256")
+            }
             val notes = release["body"]?.jsonPrimitive?.contentOrNull
             val latest = tag.removePrefix("v")
             if (isNewer(latest, BuildConfig.VERSION_NAME)) {
-                _available.value = UpdateInfo(latest, url, apkUrl, notes)
+                _available.value = UpdateInfo(latest, url, apk?.second, notes, checksumUrl)
             }
         }
     }
@@ -107,8 +119,12 @@ object AppUpdateChecker {
      * for this device's ABI. A release with neither leaves
      * [UpdateInfo.apkUrl] null and the UI falls back to opening the releases
      * page.
+     *
+     * Returns the asset's name without its ".apk" suffix alongside its
+     * download URL, so the caller can derive sibling asset names (the
+     * ".sha256" checksum) from the same pick.
      */
-    private fun apkAssetUrl(release: JsonObject): String? = runCatching {
+    private fun apkAsset(release: JsonObject): Pair<String, String>? = runCatching {
         val apks = release["assets"]?.jsonArray
             ?.mapNotNull { it as? JsonObject }
             ?.mapNotNull { asset ->
@@ -120,10 +136,22 @@ object AppUpdateChecker {
                 if (ours) name.removeSuffix(".apk").removeSuffix(".APK") to url else null
             }
             .orEmpty()
-        apks.firstOrNull { (name, _) -> '_' !in name }?.second
+        apks.firstOrNull { (name, _) -> '_' !in name }
             ?: Build.SUPPORTED_ABIS.firstNotNullOfOrNull { abi ->
-                apks.firstOrNull { (name, _) -> name.endsWith("_$abi") }?.second
+                apks.firstOrNull { (name, _) -> name.endsWith("_$abi") }
             }
+    }.getOrNull()
+
+    /** Download URL of the release's uploaded asset called [name], if it carries one. */
+    private fun assetUrl(release: JsonObject, name: String): String? = runCatching {
+        release["assets"]?.jsonArray
+            ?.mapNotNull { it as? JsonObject }
+            ?.firstOrNull { asset ->
+                val assetName = asset["name"]?.jsonPrimitive?.contentOrNull ?: return@firstOrNull false
+                assetName.equals(name, ignoreCase = true) &&
+                    asset["state"]?.jsonPrimitive?.contentOrNull == "uploaded"
+            }
+            ?.get("browser_download_url")?.jsonPrimitive?.contentOrNull
     }.getOrNull()
 
     /**
@@ -171,6 +199,7 @@ object AppUpdateChecker {
                     }
                 }
             }
+            verifyChecksum(info, target)
             _download.value = DownloadState.Ready(target)
         }.onFailure { error ->
             _download.value = if (downloadCancelled) {
@@ -178,6 +207,44 @@ object AppUpdateChecker {
             } else {
                 DownloadState.Failed(error.message ?: "Download failed")
             }
+        }
+    }
+
+    /**
+     * Verifies a freshly downloaded APK against the release's checksum asset
+     * before it may be handed to the installer. The asset holds a standard
+     * `sha256sum` line ("<hex>  <filename>"); a bare hex digest is accepted
+     * too — either way only the first whitespace-separated token is compared,
+     * case-insensitively.
+     *
+     * A mismatch deletes the APK and throws, so the failure surfaces through
+     * [DownloadState.Failed] exactly like a broken download and the file
+     * never reaches [DownloadState.Ready]. Releases published before
+     * checksums existed carry no checksum asset ([UpdateInfo.checksumUrl] is
+     * null); those keep the old behaviour and proceed unverified.
+     */
+    private fun verifyChecksum(info: UpdateInfo, file: File) {
+        val checksumUrl = info.checksumUrl ?: return
+        val request = Request.Builder().url(checksumUrl).build()
+        val body = Http.client.newCall(request).execute().use { response ->
+            check(response.isSuccessful) { "Checksum download failed: HTTP ${response.code}" }
+            response.body?.string() ?: error("Empty checksum body")
+        }
+        val expected = body.trim().split(Regex("\\s+")).firstOrNull().orEmpty()
+
+        val digest = MessageDigest.getInstance("SHA-256")
+        file.inputStream().use { input ->
+            val buffer = ByteArray(64 * 1024)
+            while (true) {
+                val read = input.read(buffer)
+                if (read == -1) break
+                digest.update(buffer, 0, read)
+            }
+        }
+        val actual = digest.digest().joinToString("") { "%02x".format(it) }
+        if (!actual.equals(expected, ignoreCase = true)) {
+            file.delete()
+            error("Checksum mismatch — the downloaded update was discarded")
         }
     }
 

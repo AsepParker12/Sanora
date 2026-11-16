@@ -201,6 +201,7 @@ import com.music.bitchord.playback.LinkRequest
 import com.music.bitchord.playback.MusicLink
 import com.music.bitchord.playback.OriginalVersion
 import com.music.bitchord.playback.PlayerDeepLink
+import com.music.bitchord.playback.TabDeepLink
 import com.music.bitchord.playback.QueueBuilder
 import com.music.bitchord.playback.QueueCoordinator
 import com.music.bitchord.playback.QueueCoordinator.asQueueEntry
@@ -427,6 +428,9 @@ class MainActivity : AppCompatActivity() {
         JamInviteLink.consume(intent)
         // Likewise for a link tapped or shared from another app — see [MusicLink].
         MusicLink.consume(intent)
+        // And for a launcher shortcut asking for a tab — see [TabDeepLink].
+        TabDeepLink.consume(intent)
+        registerAppShortcuts()
         setContent {
             val theme by AppSettings.themeMode.collectAsStateWithLifecycle()
             val appFont by AppSettings.appFont.collectAsStateWithLifecycle()
@@ -547,6 +551,49 @@ class MainActivity : AppCompatActivity() {
         PlayerDeepLink.consume(intent)
         JamInviteLink.consume(intent)
         MusicLink.consume(intent)
+        TabDeepLink.consume(intent)
+    }
+
+    /**
+     * The long-press launcher shortcuts: Search and Library, the two tabs a
+     * tap on the icon itself doesn't land on in one step.
+     *
+     * Dynamic rather than declared in a shortcuts.xml: the launcher entry
+     * points are a row of activity-aliases (one per icon variant), and a
+     * static declaration would have to pick one of them to hang off. A dynamic
+     * shortcut belongs to the package's launcher entries as a whole, so it
+     * shows whichever of them is enabled. Re-pushed on every cold start, which
+     * updates the pair in place under the same ids.
+     */
+    private fun registerAppShortcuts() {
+        val shortcuts = listOf(
+            TAB_SEARCH to R.string.search,
+            TAB_LIBRARY to R.string.library,
+        ).map { (tab, labelRes) ->
+            val intent = Intent(this, MainActivity::class.java).apply {
+                action = Intent.ACTION_VIEW
+                putExtra(TabDeepLink.EXTRA_TARGET_TAB, tab)
+            }
+            androidx.core.content.pm.ShortcutInfoCompat.Builder(
+                this,
+                "tab_$tab",
+            )
+                .setShortLabel(getString(labelRes))
+                .setLongLabel(getString(labelRes))
+                .setIcon(
+                    androidx.core.graphics.drawable.IconCompat.createWithResource(
+                        this,
+                        R.mipmap.ic_launcher,
+                    ),
+                )
+                .setIntent(intent)
+                .build()
+        }
+        runCatching {
+            shortcuts.forEach {
+                androidx.core.content.pm.ShortcutManagerCompat.pushDynamicShortcut(this, it)
+            }
+        }
     }
 }
 
@@ -4200,6 +4247,17 @@ private fun BitChordApp(
                     if (index == TAB_SEARCH) {
                         viewModel.onQueryChange("")
                         searchFocusRequested = true
+                    }
+                }
+
+                // A launcher shortcut asking for a tab goes through the same
+                // handler a tap does, so it lands exactly as a tap would —
+                // fresh stack, and the search field focused for Search.
+                val shortcutTab by TabDeepLink.pending.collectAsStateWithLifecycle()
+                LaunchedEffect(shortcutTab) {
+                    if (shortcutTab >= 0) {
+                        onTabSelected(shortcutTab)
+                        TabDeepLink.handled()
                     }
                 }
 

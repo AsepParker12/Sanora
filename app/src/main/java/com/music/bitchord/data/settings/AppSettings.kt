@@ -970,6 +970,7 @@ object AppSettings {
     }
 
     private fun readAll() {
+        migratePlainCredentials()
         migrateSingleQuality()
         audioQualityWifi.value = readQuality(KEY_QUALITY_WIFI)
         audioQualityCellular.value = readQuality(KEY_QUALITY_CELLULAR)
@@ -1096,7 +1097,7 @@ object AppSettings {
         showCacheFolder.value = prefs.getBoolean(KEY_SHOW_CACHE_FOLDER, false)
         lastfmEnabled.value = prefs.getBoolean(KEY_LASTFM_ENABLED, false)
         lastfmUsername.value = prefs.getString(KEY_LASTFM_USERNAME, "").orEmpty()
-        lastfmSessionKey.value = prefs.getString(KEY_LASTFM_SESSION_KEY, "").orEmpty()
+        lastfmSessionKey.value = authStore.lastfmSessionKey.orEmpty()
         lastfmApiKey.value = prefs.getString(KEY_LASTFM_API_KEY, "").orEmpty().ifBlank { BuildConfig.LASTFM_API_KEY }
         lastfmSecret.value = prefs.getString(KEY_LASTFM_SECRET, "").orEmpty().ifBlank { BuildConfig.LASTFM_SECRET }
         lastfmEndpoint.value = prefs.getString(KEY_LASTFM_ENDPOINT, "").orEmpty()
@@ -1107,9 +1108,9 @@ object AppSettings {
         scrobbleDelayPercent.value = prefs.getFloat(KEY_SCROBBLE_DELAY_PERCENT, 0.5f)
         scrobbleDelaySeconds.value = prefs.getInt(KEY_SCROBBLE_DELAY_SECONDS, 180)
         listenBrainzEnabled.value = prefs.getBoolean(KEY_LISTENBRAINZ_ENABLED, false)
-        listenBrainzToken.value = prefs.getString(KEY_LISTENBRAINZ_TOKEN, "").orEmpty()
+        listenBrainzToken.value = authStore.listenBrainzToken.orEmpty()
         listenBrainzPrimaryArtistOnly.value = prefs.getBoolean(KEY_LISTENBRAINZ_PRIMARY_ARTIST_ONLY, false)
-        spotifySpdcToken.value = prefs.getString(KEY_SPOTIFY_SPDC_TOKEN, "").orEmpty()
+        spotifySpdcToken.value = authStore.spotifySpdcToken.orEmpty()
         replayGenres.value = prefs.getBoolean(KEY_REPLAY_GENRES, true)
         filterNonMusicAudio.value = prefs.getBoolean(KEY_FILTER_NON_MUSIC_AUDIO, true)
         localMusicSort.value = readLocalMusicSort(KEY_LOCAL_MUSIC_SORT)
@@ -1179,6 +1180,41 @@ object AppSettings {
             prefs.edit().putInt(KEY_LAST_VERSION_CODE, currentVersionCode).apply()
         }
         return currentVersionCode > last
+    }
+
+    /**
+     * One-time move of the scrobbler credentials out of the plain settings
+     * into the encrypted store ([AuthStore]), where the WebDAV/SMB passwords
+     * already live. Runs as part of every [readAll]: a plain value is copied
+     * only while the encrypted store holds none — the encrypted store is the
+     * live one once migrated, so a plain value that somehow reappears (an
+     * import keeps local secrets in the plain file) never overwrites it. The
+     * plain entry is removed only once the value reads back from the
+     * encrypted store, so an interrupted move is retried on the next read
+     * instead of costing anyone their login.
+     */
+    private fun migratePlainCredentials() {
+        fun move(key: String, read: () -> String?, write: (String?) -> Unit) {
+            val plain = prefs.getString(key, null)?.takeIf { it.isNotEmpty() } ?: return
+            val stored = read()
+            when {
+                stored.isNullOrEmpty() -> {
+                    write(plain)
+                    // Delete the plain copy only once the value reads back,
+                    // so a failed write is retried on the next read.
+                    if (read() == plain) prefs.edit().remove(key).apply()
+                }
+                // Same value in both: an earlier move copied it but did not
+                // get to delete the plain entry.
+                stored == plain -> prefs.edit().remove(key).apply()
+                // Different values: the encrypted store is the live one, so
+                // the plain leftover is left alone rather than overwriting
+                // a login. It stays out of exports via [SECRETS] either way.
+            }
+        }
+        move(KEY_LASTFM_SESSION_KEY, { authStore.lastfmSessionKey }, { authStore.lastfmSessionKey = it })
+        move(KEY_LISTENBRAINZ_TOKEN, { authStore.listenBrainzToken }, { authStore.listenBrainzToken = it })
+        move(KEY_SPOTIFY_SPDC_TOKEN, { authStore.spotifySpdcToken }, { authStore.spotifySpdcToken = it })
     }
 
     /**
@@ -1771,7 +1807,7 @@ object AppSettings {
 
     fun setLastfmSessionKey(value: String) {
         lastfmSessionKey.value = value
-        prefs.edit().putString(KEY_LASTFM_SESSION_KEY, value).apply()
+        authStore.lastfmSessionKey = value.ifEmpty { null }
     }
 
     fun setLastfmApiKey(value: String) {
@@ -1791,7 +1827,7 @@ object AppSettings {
 
     fun setSpotifySpdcToken(value: String) {
         spotifySpdcToken.value = value
-        prefs.edit().putString(KEY_SPOTIFY_SPDC_TOKEN, value).apply()
+        authStore.spotifySpdcToken = value.ifEmpty { null }
         SpotifyToken.invalidate()
     }
 
@@ -1882,7 +1918,7 @@ object AppSettings {
 
     fun setListenBrainzToken(value: String) {
         listenBrainzToken.value = value
-        prefs.edit().putString(KEY_LISTENBRAINZ_TOKEN, value).apply()
+        authStore.listenBrainzToken = value.ifEmpty { null }
     }
 
     fun setListenBrainzPrimaryArtistOnly(value: Boolean) {

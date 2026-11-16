@@ -6,12 +6,14 @@ import android.content.SharedPreferences
 /**
  * Encrypted-at-rest storage for credentials.
  *
- * Two live here: the YouTube Music session cookie, and — if the user turns on
- * the Discord integration — that account's own bearer token. Neither is a
- * password: the Google one is typed into accounts.google.com inside a WebView,
- * and the Discord one is read out of a completed login session. But both grant
- * full access to their account, so they don't go in the plain prefs the
- * scrobbler tokens use.
+ * Live here: the YouTube Music session cookie; — if the user turns on the
+ * Discord integration — that account's own bearer token; the WebDAV and SMB
+ * passwords; and the scrobbler credentials (the Last.fm session key, the
+ * ListenBrainz token, and the Spotify session cookie the canvas harvest runs
+ * on). None of them is a password as such: the Google one is typed into
+ * accounts.google.com inside a WebView, and the Discord one is read out of a
+ * completed login session. But all of them grant access to their account, so
+ * none of them goes in the plain prefs.
  *
  * A restored file whose keyset this device can't unwrap is recreated, and a
  * Keystore that can't be used at all degrades to plain prefs rather than
@@ -122,6 +124,33 @@ class AuthStore(context: Context) {
         set(value) = prefs.edit().putString(KEY_SMB_PASSWORD, value).apply()
 
     /**
+     * The Last.fm session key the scrobbler acts with. Encrypted like every
+     * other credential here: a backup export carries the Last.fm username
+     * and scrobble settings in plain prefs, but never this. Older builds
+     * kept it in the plain settings; [com.music.bitchord.data.settings.AppSettings]
+     * moves it here on read.
+     */
+    var lastfmSessionKey: String?
+        get() = prefs.getString(KEY_LASTFM_SESSION_KEY, null)
+        set(value) = prefs.edit().putString(KEY_LASTFM_SESSION_KEY, value).apply()
+
+    /**
+     * The ListenBrainz token listens are submitted with. Encrypted and
+     * export-excluded for the same reason as [lastfmSessionKey].
+     */
+    var listenBrainzToken: String?
+        get() = prefs.getString(KEY_LISTENBRAINZ_TOKEN, null)
+        set(value) = prefs.edit().putString(KEY_LISTENBRAINZ_TOKEN, value).apply()
+
+    /**
+     * The Spotify `sp_dc` session cookie the canvas token harvest runs on.
+     * Encrypted and export-excluded for the same reason as [lastfmSessionKey].
+     */
+    var spotifySpdcToken: String?
+        get() = prefs.getString(KEY_SPOTIFY_SPDC_TOKEN, null)
+        set(value) = prefs.edit().putString(KEY_SPOTIFY_SPDC_TOKEN, value).apply()
+
+    /**
      * The channel the listener chose to act as, if they chose one.
      *
      * Stored beside the cookie rather than in the plain settings because it is
@@ -230,5 +259,11 @@ class AuthStore(context: Context) {
         private const val KEY_DISCORD_TOKEN = "discord_token"
         private const val KEY_WEBDAV_PASSWORD = "webdav_password"
         private const val KEY_SMB_PASSWORD = "smb_password"
+        // Same key names the plain settings used for these three, so a value
+        // found there reads as the same setting once moved; the stores are
+        // different files, so nothing collides.
+        private const val KEY_LASTFM_SESSION_KEY = "lastfm_session_key"
+        private const val KEY_LISTENBRAINZ_TOKEN = "listenbrainz_token"
+        private const val KEY_SPOTIFY_SPDC_TOKEN = "spotify_spdc_token"
     }
 }
