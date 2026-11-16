@@ -7,8 +7,8 @@ on:
 
 permissions:
   contents: write
-  
-  jobs:
+
+jobs:
   build-prod-release:
     runs-on: ubuntu-latest
 
