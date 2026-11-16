@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.os.LocaleList
+import androidx.appcompat.app.AppCompatDelegate
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -393,6 +395,29 @@ internal fun shouldSkipAfterDislike(
 
 
 class MainActivity : AppCompatActivity() {
+
+    /**
+     * Belt and braces for the per-app language. AppCompat normally applies
+     * the stored application locale on its own, but on some OEM ROMs it
+     * never reaches the running activity — the picker then shows (say)
+     * Indonesian selected while every screen stays English. Wrapping the
+     * base context with the stored locale here makes the choice take
+     * effect on every device; when AppCompat already applied the same
+     * locale this wrap is a no-op.
+     */
+    override fun attachBaseContext(newBase: Context) {
+        val appLocale = AppCompatDelegate.getApplicationLocales().get(0)
+        val wrapped = if (appLocale == null) {
+            newBase
+        } else {
+            val config = Configuration(newBase.resources.configuration)
+            config.setLocale(appLocale)
+            config.setLocales(LocaleList(appLocale))
+            newBase.createConfigurationContext(config)
+        }
+        super.attachBaseContext(wrapped)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
