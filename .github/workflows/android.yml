@@ -45,15 +45,15 @@ jobs:
     - name: Stage release APK
       run: |
         mkdir -p release
-        cp app/build/outputs/apk/prod/release/*universal*.apk release/Sonara-1.0.0.apk
+        cp app/build/outputs/apk/prod/release/*universal*.apk release/Sonara-1.0.1.apk
 
     - name: Publish GitHub Release
       if: github.event_name == 'workflow_dispatch'
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v1.0.0
-        name: Sonara 1.0.0
-        files: release/Sonara-1.0.0.apk
+        tag_name: v1.0.1
+        name: Sonara 1.0.1
+        files: release/Sonara-1.0.1.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
